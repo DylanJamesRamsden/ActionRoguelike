@@ -29,12 +29,25 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AActor> ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	FName PrimaryAttackSocket;
+	
+	UPROPERTY(EditDefaultsOnly)
+	bool bDebug;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	void MoveForward(float Value);
 
 	void MoveRight(float Value);
+
+	void DrawRotationDebugArrows() const;
+
+	void PrimaryAttack();
 
 public:	
 	// Called every frame
