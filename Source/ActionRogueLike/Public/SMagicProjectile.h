@@ -29,7 +29,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UParticleSystemComponent* EffectComp;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	UParticleSystem* HitEffect;
 	
 	// Called when the game starts or when spawned

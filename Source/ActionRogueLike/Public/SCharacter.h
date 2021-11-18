@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 
 //#include "Camera/CameraComponent.h"
+#include "SInteractionComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -29,11 +30,17 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(VisibleAnywhere)
+	USInteractionComponent* InteractionComp;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
 	TSubclassOf<AActor> ProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, Category = "Attack")
 	FName PrimaryAttackSocket;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	UAnimMontage* AttackAnim;
 	
 	UPROPERTY(EditDefaultsOnly)
 	bool bDebug;
@@ -48,6 +55,10 @@ protected:
 	void DrawRotationDebugArrows() const;
 
 	void PrimaryAttack();
+	
+	void PrimaryAttack_TimeElapsed();
+
+	void PrimaryInteract();
 
 public:	
 	// Called every frame
