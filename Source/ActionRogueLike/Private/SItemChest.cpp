@@ -22,7 +22,29 @@ ASItemChest::ASItemChest()
 void ASItemChest::BeginPlay()
 {
 	Super::BeginPlay();
-	
+}
+
+void ASItemChest::TimelineProgress(float Value)
+{
+	LidMesh->SetRelativeRotation(FRotator(CurveFloat->GetFloatValue(CurveTimeline.GetPlaybackPosition()), 0, 0));
+}
+
+void ASItemChest::TimelineFinished()
+{
+	if (bIsOpen)
+	{
+		bIsOpen = false;
+	}
+	else
+	{
+		bIsOpen = true;
+
+		OnChestOpened();
+	}
+}
+
+void ASItemChest::OnChestOpened_Implementation()
+{
 }
 
 // Called every frame
@@ -30,11 +52,33 @@ void ASItemChest::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//Must call tick on timeline for it to run
+	if (CurveTimeline.IsPlaying())
+	{
+		CurveTimeline.TickTimeline(DeltaTime);	
+	}
 }
 
 void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 {
-	//Relative rotation refers to what its attached to
-	LidMesh->SetRelativeRotation(FRotator(ChestOpenTargetPitch, 0.0, 0.0));
+	//Checks if the curve float is assigned
+	if (CurveFloat)
+	{
+		FOnTimelineFloat TimelineProgressCallback;
+		FOnTimelineEventStatic TimelineFinishedCallback;
+
+		TimelineProgressCallback.BindUFunction(this, FName("TimelineProgress"));
+		TimelineFinishedCallback.BindUFunction(this, FName("TimelineFinished"));
+		
+		CurveTimeline.AddInterpFloat(CurveFloat, TimelineProgressCallback);
+		CurveTimeline.SetTimelineFinishedFunc(TimelineFinishedCallback);
+
+		if (!bIsOpen)
+		{
+			CurveTimeline.PlayFromStart();	
+		}
+		else CurveTimeline.ReverseFromEnd();
+	}
+	
 }
 

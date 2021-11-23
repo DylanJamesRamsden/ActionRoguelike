@@ -33,14 +33,17 @@ void ASMagicProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::DestroyProjectile);
+	SphereComp->OnComponentHit.AddDynamic(this, &ASMagicProjectile::DestroyProjectile);
 }
 
-void ASMagicProjectile::DestroyProjectile(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+void ASMagicProjectile::DestroyProjectile(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-	UGameplayStatics::SpawnEmitterAtLocation(this, HitEffect, GetActorLocation(), GetActorRotation(), FVector(1));
+	if (GetInstigator() != OtherActor)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, HitEffect, GetActorLocation(), GetActorRotation(), FVector(1));
 
-	Destroy();
+		Destroy();	
+	}
 }
 
 // Called every frame

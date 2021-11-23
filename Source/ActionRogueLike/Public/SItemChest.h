@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 
 #include "SGameplayInterface.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Actor.h"
 #include "SItemChest.generated.h"
 
@@ -22,14 +23,30 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BaseMesh;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* LidMesh;
 
 	UPROPERTY(EditAnywhere)
 	float ChestOpenTargetPitch;
+
+	bool bIsOpen;
+
+	FTimeline CurveTimeline;
+
+	UPROPERTY(EditAnywhere, Category = "Open Timeline")
+	UCurveFloat* CurveFloat;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void TimelineProgress(float Value);
+
+	UFUNCTION()
+	void TimelineFinished();
+
+	UFUNCTION(BlueprintNativeEvent)
+	void OnChestOpened();
 
 public:	
 	// Called every frame
